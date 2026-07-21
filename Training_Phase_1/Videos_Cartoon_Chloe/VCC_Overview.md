@@ -5,5 +5,5 @@ The video "hellochloe.mp4" includes her greeting to the participant and her intr
 The video "trainingintro.mp4" includes her instructions for the training phase trials/tasks.
 The video "trainingconc.mp4" includes her instructions for the exposure phase trials/tasks which closely resemble those in the training phase.
 
-For an overview of the trials in the training phase, please refer to the file TP1_Overview in the Training_Phase_1 directory.
+For an overview of the trials in the training phase, please refer to the file TP1_Overview in the Training_Phase_1 directory. 
 For more information and resources relating to the character Chloe, please refer to the Character_Files which can be found as a separate folder in the main branch.
