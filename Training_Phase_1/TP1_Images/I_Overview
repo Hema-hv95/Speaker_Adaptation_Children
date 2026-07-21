@@ -1,7 +1,1 @@
-Includes the five images used in the first training phase (prior to the exposure phase).
-These images are presented to the participant sequentially.
-Each image is accompanied by a question that elicits a (subjective or objective) judgement from the participant on a specific characteristic of the image. 
-For example, with a picture of a blue car, the question might be "do you think this car is yellow?"
 
-For the script that accompanies this trial, including the questions posed, please refer to the "Script" document provided in the Training_Phase_1 directory.
-For an overview of the trials in the first training phase, please refer to the overview provided in the file titled TP1_Overview in the Training_Phase_1 directory.
