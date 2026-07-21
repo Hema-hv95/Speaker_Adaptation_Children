@@ -1,0 +1,10 @@
+Includes videos of the cartoon character Sam and his pre-programmed responses/interactions with the participants in the first training phase (before the exposure phase). 
+Sam is one of the three primary characters interacting with the participant.
+
+The video hellosam.mp4 includes his greeting to the participant.   
+The videos titled as (q/y/n) + (manglasses/flowersvase/caryellow/birdwings/niceshoes) contain the question (q), the response to "yes" (y) , and the response to "no" (n), respectively, pertaining to the specific picture (which can be found in the "Images" folder in the Training_Phase_1 directory).  
+The videos titled as "herepicture" + 1/2/3/4 are used to focus the attention of the participant on the picture.  
+
+For an overview of the trials in the first training phase, please refer to the overview provided in the file titled TP1_Overview in the Training_Phase_1 directory.  
+For more information and resources relating to the character Sam, please refer to the Character_Files provided in the form of a separate folder in the main branch.  
+For the script that accompanies the first training phase, please refer to the "TP1_Script" document provided in the Training_Phase_1 directory.  
