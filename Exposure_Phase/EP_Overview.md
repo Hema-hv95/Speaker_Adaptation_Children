@@ -32,7 +32,8 @@ There are 18 trials in total. Trials using the quantifiers "all" and "none" are 
 - Ratio 20 ; Quantifier "Few" - 1 ; Quantifier "Many" - 1
 - Ratio 80 ; Quantifier "Few" - 1 ; Quantifier "Many" - 1
 - Ratio 40 ; Quantifier "Few" - 3 ; Quantifier "Many" - 3
-- Ratio 60 ; Quantifier "Few" - 3 ; Quantifier "Many" - 3
+- Ratio 60 ; Quantifier "Few" - 3 ; Quantifier "Many" - 3  
+
 Here, the ratio refers to the percent of gumballs of one colour with respect to the other colour. 20 percent ratio means 20 percent of the gumballs are blue, if the question targets blue gumballs, or 20 percent are orange, if the question targets orange gumballs. The quantifier refers to quantifier used in the question. Thus, trial using ratio 20 and quantifier "Few" will use the question "Do you think few of the gumballs are blue/orange?" and use a gumball machine containing either 20 percent blue gumballs or 20 percent orange gumballs (depending on the target chosen by the question).
 
 A within-subject design is used in terms of the target colour, i.e., whether the question is addressing the amount of orange gumballs or the amount of blue gumballs. The trials shuffle between orange and blue for each participant. A between-subject design is used in terms of the speaker condition, i.e., whether the character embodies speaker 1 or speaker 2. No participant will be exposed to both conditions.
