@@ -6,7 +6,8 @@ Includes the gumball machine containing different ratios of blue gumballs to ora
 - 5 with 60 percent blue gumballs/40 percent orange gumballs  
 - 5 with 80 percent blue gumballs/20 percent orange gumballs
 
-All ratios except 0 and 100 have 5 versions each, where the blue gumballs are concentrated 
+All the ratios apart from 0 and 100 have their own folders as the ratios 20, 40, 60 and 80 have 5 versions each in differing spatial arrangements.  
+The blue gumballs are concentrated 
 - to the left: "-left"  
 - to the right: "-right"  
 - to the top: "-up"  
