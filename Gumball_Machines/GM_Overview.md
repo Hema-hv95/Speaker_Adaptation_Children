@@ -11,7 +11,7 @@ All ratios except 0 and 100 have 5 versions each, where the blue gumballs are co
 - to the right: "-right"  
 - to the top: "-up"  
 - to the bottom: "-down"  
-- or scattered: "-scat"
+- or scattered: "-scat"  
 These were created to help control any biasing/undesirable effects of spatial orientation on perception.
 
 The total number of gumballs is 30, and each ratio will produce whole number splits between blue and orange. 
