@@ -23,4 +23,4 @@ The colours orange and blue were chosen for how easily distinguishable they are,
 How to read the file names: 
 "20percentblue-left.jpg" - 20 percent of the gumballs are blue, and they are concentrated to the left of the gumball machine.
 
-These images were created in Adobe Fresco, and other arrangements can be created using the images of the empty gumball machine (empty-gumballmachine.png), and the blue gumball (blue-gumball.png) and the orange gumball (orange-gumball.png) - the latter two of which are available as images with transparent backgrounds for ease of use. Colours can be modified by simply changing the hue or colour balance (while retaining the appearance otherwise). 
+These images were created in Adobe Fresco, and other arrangements can be created using the images of the empty gumball machine (empty-gumballmachine.png), and the blue gumball (bluegumball-nobg.png) and the orange gumball (orangegumball-nobg.png) - the latter two of which are available as images with transparent backgrounds for ease of use. Colours can be modified by simply changing the hue or colour balance (while retaining the appearance otherwise). 
