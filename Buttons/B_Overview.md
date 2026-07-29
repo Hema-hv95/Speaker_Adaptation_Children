@@ -46,6 +46,6 @@ Button 3
 A third "not sure" button was added to prevent the participant from being forced to choose between two options. Shapes were used instead of colours as we couldn't find three equally distinguishable colours after red, green, blue and orange were used up (we didn't want to use red and green again as they represent different answers in the exposure phase). Incorrect and neutral sound effects are introduced to provide extra reinforcement and validation to the participant. Instructions are provided about the answers represented by the buttons for the first trial of the "many/few" category, and the first trial of the "all/none" category.
 
 Development of the buttons:
-- Adobe Fresco was used to create images of cartoon buttons in their states prior to and post selection (not lit up and lit up).
-- Screen recordings were made of the layer containing the "lit up" effect being displayed (after a few seconds of being hidden) to make them seem animated.
-- These screen recordings were combined with the sound effects in Microsoft Clipchamp.
+- Adobe Fresco was used to create images of cartoon buttons in their states prior to and post selection (not lit up and lit up). Please refer to the B_Images folder in the Buttons directory for the images.
+- Screen recordings were made of the layer containing the "lit up" effect being displayed (after a few seconds of being hidden) to make them seem animated. Please refer to the B_Videos folder in the Buttons directory for the relevant animations.
+- These screen recordings were combined with the sound effects in Microsoft Clipchamp. Please refer to the Sound_Effects folder in the Buttons directory for the sound effects.
