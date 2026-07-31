@@ -32,12 +32,12 @@ Each trial follows the following format:
 
 There are 18 trials in total. Trials using the quantifiers "all" and "none" are accompanied by the ratios 0 or 100, i.e. Trials using the quantifiers "many" and "few" are accompanied by the ratios 20, 40, 60, or 80, and they are interspersed by "all"/"none" trials, which act as attention checks. The counts for the different categories of trials are as follows:
 
-Ratio 100 - 2
-Ratio 0 - 2
-Ratio 20 - 2
-Ratio 80 - 2
-Ratio 40 - 5
-Ratio 60 - 5
+- Ratio 100 - 2
+- Ratio 0 - 2
+- Ratio 20 - 2
+- Ratio 80 - 2
+- Ratio 40 - 5
+- Ratio 60 - 5
 
 Here, 100/0/20/80/40/60 refers to the percent of gumballs of one colour with respect to the other colour. 20 percent means 20 percent of the gumballs are blue, if the question targets blue gumballs, or 20 percent are orange, if the question targets orange gumballs.
 
