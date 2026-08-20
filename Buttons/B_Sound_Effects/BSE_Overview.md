@@ -1,1 +1,1 @@
-
+This folders contains MP3 files of the sound effects that were incorporated into the animations of the buttons to convey that the participant's answer is correct or incorrect. The neutral sound effect is used for the animation of the triangle button in the test phase that represents the response "Not sure", i.e., other. 
