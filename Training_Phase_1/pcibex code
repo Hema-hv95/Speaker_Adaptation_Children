@@ -1,0 +1,183 @@
+PennController.ResetPrefix(null);
+
+//To hide the progress bar
+
+var defaults = [      "PennController",{hideProgressBar: true}
+                ] ;
+
+//To ensure all resources have preloaded prior to experiment start and prevent lags during
+                
+CheckPreloaded();
+
+Sequence("introscreen", "trainingphase", "conclusionscreen");
+
+//Intro to the training phase tasks: character introductions + instructions to the task
+
+newTrial("introscreen",
+    newVideo("hellofromchloe", "hellochloe.mp4")
+        .size(400,400)
+    ,
+    newVideo("hellofromsam", "hellosam.mp4")
+        .size(400,400)
+    ,
+    newVideo("introvid", "trainingintro.mp4")
+        .size(400,400)
+    ,   
+    newVideo("green0", "animatedgreenbutton.mp4")
+        .size(215,188)
+    ,
+    newVideo("red0", "animatedredbutton.mp4")
+        .size(215,188)
+    ,
+    newText("affirm0", "Yes")
+        .css("font-size", "30px")
+    ,
+    newText("deny0", "No")
+        .css("font-size", "30px")
+    ,
+
+// These elements are printed onto the screen before the beginning of the task to maintain a sense of continuity.
+
+    newCanvas("pretrainphasecanvas", 1100, 563) 
+        .add(100,-130,getVideo("hellofromchloe"))
+        .add(600,-130,getVideo("hellofromsam"))
+        .add(300,305, getVideo("green0"))
+        .add(550,305, getVideo("red0"))
+        .add(380,465, getText("affirm0"))
+        .add(630,465, getText("deny0"))
+        .center()
+        .print()
+        .log()
+    ,
+
+//The participant must select the cartoon (akin to a play button) to start the experiment/hear them talking.
+
+    newSelector("tostart")
+            .add(getVideo("hellofromchloe"))
+            .frame("none") //To prevent borders from appearing when selection occurs.
+            .once()
+            .wait()
+            .test.selected()
+            .success(getVideo("hellofromchloe").disable(0.01).play().wait()) //The numerical value 0.01 used as an argument with .disable() prevents opaque layer from being pasted onto the video when controls are disabled.
+    ,
+    getVideo("hellofromsam").disable(0.01).play().wait()
+    ,
+    getVideo("hellofromchloe").remove()
+    ,
+    getCanvas("pretrainphasecanvas").add(90, -130, getVideo("introvid"))
+    ,
+    getVideo("introvid").disable(0.01).play().wait()
+);
+
+CheckPreloaded();
+
+Template("lingexpt-trainingphase1.csv", row =>
+    newTrial("trainingphase",
+        newImage("picture", row.picture)
+            .size(435,300)
+        ,
+        newVideo("here", row.here)
+            .size(400,400)
+        ,
+        newVideo("question", row.theq)
+            .size(400,400)
+        ,
+        newVideo("green", "animatedgreenbutton.mp4")
+            .size(215,188)
+        ,
+        newVideo("red", "animatedredbutton.mp4")
+            .size(215,188)
+        ,
+        newText("affirm", "Yes")
+            .css("font-size", "30px")
+        ,
+        newText("deny", "No")
+            .css("font-size", "30px")
+        ,
+        newCanvas("trainphasecanvas", 1100, 563)
+            .add(70, -50, getImage("picture"))
+            .add(500, -130, getVideo("here").disable(0.01))
+            .add(300,305, getVideo("green"))
+            .add(550,305, getVideo("red"))
+            .add(380,465, getText("affirm"))
+            .add(630,465, getText("deny"))
+            .center()
+            .print()
+            .log()
+        ,
+        newTimer("break0", 1000)
+            .start()
+            .wait()
+        ,
+        getVideo("here").play().wait()
+        ,
+        getCanvas("trainphasecanvas").add(500,-130, getVideo("question"))
+        ,
+        getVideo("question").disable(0.01).play().wait()
+        ,
+        newSelector("greenorred") // turns short video animations into elements that can be selected by the participant.
+            .add(getVideo("green"), getVideo("red"))
+            .frame("none")
+            .once()
+            .wait()
+            .log()
+            .test.selected(getVideo("green")) // Tests if green button (yes) is pressed: success triggers response to "yes"; failure (or red button press) triggers response to "no".
+            .success(
+                getVideo("green").disable(0.01).play().wait()
+                ,
+                getVideo("question").remove()
+                ,
+                newVideo("responsetoyes", row.toyes)
+                    .size(400,400)
+                ,
+                getCanvas("trainphasecanvas").add(500,-130, getVideo("responsetoyes"))
+                ,
+                getVideo("responsetoyes").disable(0.01).play().wait()
+                )
+            .failure(
+                getVideo("red").disable(0.01).play().wait()
+                ,
+                getVideo("question").remove()
+                ,
+                newVideo("responsetono", row.tono)
+                    .size(400,400)
+                ,
+                getCanvas("trainphasecanvas").add(500,-130, getVideo("responsetono"))
+                ,
+                getVideo("responsetono").disable(0.01).play().wait()
+                )
+            )
+        
+    );
+
+//The video below provides the transition + reiteration of instructions for the exposure phase.
+
+Template("playbutton.csv", row =>
+    newTrial("conclusionscreen",
+        newVideo("conclusionvid", "trainingconc.mp4")
+            .size(800,800)
+        ,
+        newImage("playbutton", "playbutton.jpg")
+            .size(100,100)
+        ,
+        newHtml("playhtml", row.htmlfile)
+        ,
+        newCanvas("posttrainphasecanvas", 1100, 563)
+            .add(200,-300, getVideo("conclusionvid").disable(0.01))
+            .add(500, 400, getImage("playbutton"))
+            .center()
+            .print()
+            .log()
+        ,
+        getVideo("conclusionvid").play().wait()
+        ,
+        getImage("playbutton").remove()
+        ,
+        getCanvas("posttrainphasecanvas").add(500,400, getHtml("playhtml"))
+        ,
+        newSelector("presstoplay")
+            .add(getHtml("playhtml"))
+            .once()
+            .wait()
+    )
+)
