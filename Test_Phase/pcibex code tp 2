@@ -1,0 +1,245 @@
+PennController.ResetPrefix(null);
+
+CheckPreloaded();
+
+Sequence("forvariable", shuffle(randomize("Blue"), randomize("Orange")), "completion");
+
+newTrial("forvariable",
+    newVar("test-taken", 1).global()
+    ,
+    newVar("noselector", 1).global()
+    ,
+    newVar("zero", 2).global()
+    ,
+    newVar("hundred", 2).global()
+    ,
+    newVar("twenty", 2).global()
+    ,
+    newVar("eighty", 2).global()
+    ,
+    newVar("forty", 5).global()
+    ,
+    newVar("sixty", 5).global()
+    ,
+    newVar("triggerIAN", 1).global()
+    ,
+    newVar("triggerIMF", 1).global()
+);
+
+Template("lingexpt-testphase1.csv", row =>
+    newTrial(row.Target,
+        getVar("test-taken").test.is(q => q > 18)
+            .success(end())
+        ,
+        getVar(row.Ratio).test.is(0).failure(
+            newVideo("here", row.Here)
+                        .size(400,400)
+            ,
+            newVideo("test-staticdescription", row.Staticdescription)
+                .size(400,400)
+            ,
+            newImage("test-gumballmachine", row.Image)
+                .size(700,393)
+            ,
+            newVideo("circler", "animatedcirclebuttonr.mp4")
+                .size(215,188)
+            ,
+            newVideo("squarer", "animatedsquarebuttonr.mp4")
+                .size(215,188)
+            ,
+            newVideo("circlew", "animatedcirclebuttonw.mp4")
+                .size(215,188)
+            ,
+            newVideo("squarew", "animatedsquarebuttonw.mp4")
+                .size(215,188)
+            ,
+            newVideo("triangle", "animatedtrianglebutton.mp4")
+                .size(215,188)
+            ,
+            newText("affirm", row.Squareoption)
+                .css("font-size", "30px")
+            ,
+            newText("deny", row.Circleoption)
+                .css("font-size", "30px")
+            ,
+            newText("other", "Not sure")
+                .css("font-size", "30px")
+            ,
+            newCanvas("testcanvas", 1100, 563)
+                .add(170, -90, getImage("test-gumballmachine").log())
+                .add(0, -130, getVideo("here"))
+                .add(700, -130, getVideo("test-staticdescription").log())
+                .add(200, 305, getVideo(row.Leftoption))
+                .add(450, 305, getVideo(row.Rightoption))
+                .add(700, 305, getVideo("triangle"))
+                .add(260, 475, getText("affirm"))
+                .add(510, 475, getText("deny"))
+                .add(760, 470, getText("other"))
+                .center()
+                .print()
+                .log()
+            ,
+            newTimer("break0", 1000)
+                .start()
+                .wait()
+            ,
+            getVar("noselector")
+                .test.is(0)
+                .success(getVideo("here").disable(0.01).play().wait())
+                .failure(
+                    newSelector("tostart")
+                        .add(getVideo("here"))
+                        .frame("none")
+                        .once()
+                        .wait()
+                        .test.selected()
+                        .success(getVideo("here").disable(0.01).play().wait())
+                    ,
+                    getVar("noselector").set(a => a - 1)
+                    )
+            ,
+            getVideo("test-staticdescription").disable(0.01).play().wait()
+            ,
+            newVideo("test-question", row.Question).size(400,400)
+            ,
+            getCanvas("testcanvas").add(-70, -130, getVideo("test-question").log())
+            ,
+            newTimer("break1", 500)
+                .start()
+                .wait()
+            ,
+            getVideo("test-question").disable(0.01).play().wait()
+            ,
+            getVar(row.Instructionstrigger).test.is(0).failure(
+                newVideo("instructions", row.Instructions)
+                    .size(400,400)
+                ,
+                getCanvas("testcanvas").add(-70, -130, getVideo("instructions"))
+                ,
+                getVideo("instructions").disable(0.01).play().wait()
+                ,
+                getVar(row.Instructionstrigger).set(b => b - 1)
+                )
+            ,
+            newSelector("shapes")
+                .add(getVideo(row.Leftoption), getVideo(row.Rightoption), getVideo("triangle"))
+                .frame("none")
+                .once()
+                .wait()
+                .log()
+                .test.selected(getVideo(row.Rightresponse))
+                .success(
+                    getVideo(row.Rightresponse).disable(0.01).play().wait()
+                    ,
+                    newTimer("break2", 1000)
+                        .start()
+                        .wait()
+                    ,
+                    newVideo("thatsright", row.Toright)
+                        .size(400,400)
+                    ,
+                    getCanvas("testcanvas").add(0,-130, getVideo("thatsright").log())
+                    ,
+                    getVideo("thatsright").disable(0.01).play().wait()
+                    ,
+                    newVideo("test-answer1", row.Answer)
+                        .size(400,400)
+                    ,
+                    getCanvas("testcanvas").add(700,-130, getVideo("test-answer1").log())
+                    ,
+                    getVideo("test-answer1").disable(0.01).play().wait()
+                    ,
+                    newTimer("break3", 500)
+                        .start()
+                        .wait()
+                    ,
+                    getVar(row.Ratio).set(v => v - 1)
+                    ,
+                    getVar("test-taken").set(q => q + 1)
+                    )
+                .failure(
+                    getSelector("shapes")
+                        .test.selected(getVideo(row.Wrongresponse))
+                        .success(
+                            getVideo(row.Wrongresponse).disable(0.01).play().wait()
+                            ,
+                            newTimer("break4", 1000)
+                                .start()
+                                .wait()
+                            ,
+                            newVideo("thatswrong", row.Towrong)
+                                .size(400,400)
+                            ,
+                            getCanvas("testcanvas").add(0,-130, getVideo("thatswrong").log())
+                            ,
+                            getVideo("thatswrong").disable(0.01).play().wait()
+                            ,
+                            newVideo("test-answer2", row.Answer)
+                                .size(400,400)
+                            ,
+                            getCanvas("testcanvas").add(700,-130, getVideo("test-answer2").log())
+                            ,
+                            getVideo("test-answer2").disable(0.01).play().wait()
+                            ,
+                            newTimer("break5", 500)
+                                .start()
+                                .wait()
+                            ,
+                            getVar(row.Ratio).set(v => v - 1)
+                            ,
+                            getVar("test-taken").set(q => q + 1)
+                                    )
+                        .failure(
+                            getVideo(row.Otherresponse).disable(0.01).play().wait()
+                            ,
+                            newTimer("break6", 1000)
+                                .start()
+                                .wait()
+                            ,
+                            newVideo("isee", row.Toother)
+                                .size(400,400)
+                            ,
+                            getCanvas("testcanvas").add(0,-130, getVideo("isee").log())
+                            ,
+                            getVideo("isee").disable(0.01).play().wait()
+                            ,
+                            newVideo("test-answer3", row.Answer)
+                                .size(400,400)
+                            ,
+                            getCanvas("testcanvas").add(700,-130, getVideo("test-answer3").log())
+                            ,
+                            getVideo("test-answer3").disable(0.01).play().wait()
+                            ,
+                            newTimer("break7", 500)
+                                .start()
+                                .wait()
+                            ,
+                            getVar(row.Ratio).set(v => v - 1)
+                            ,
+                            getVar("test-taken").set(q => q + 1)
+                                    )
+                    )
+        )
+    )
+);
+
+newTrial("completion",
+    newVideo("thanks", "endscreenvid.mp4")
+        .size(500, 500)
+        .disable(0.01)
+    ,
+    newTimer("beforegif", 1000)
+        .start()
+        .wait()
+    ,
+    newCanvas("endscreen", 1100, 563)
+        .add(300,-50, getVideo("thanks"))
+        .center()
+        .print()
+    ,
+    SendResults()
+    ,
+    getVideo("thanks")
+        .play()
+        .wait()
+    );
