@@ -1,0 +1,224 @@
+PennController.ResetPrefix(null)
+
+var defaults = [      "PennController",{hideProgressBar: true} // hides the progress bar
+                ] ;
+                
+CheckPreloaded(); // preloads resources to minimize buffering during the experiment
+
+Sequence("intro", "testtraining", "conc")
+
+// the following trial presents Chloe's introduction to this phase and the format of the task, and introduces Chris to the participant. 
+
+newTrial("intro",
+    newVar("endtrials", 1) // creates the variable that will be called in later trials to determine the number of trials in this phase.
+        .global()
+    ,
+    newVideo("intropt1", "trainingintro-1.mp4")
+        .size(400,400)
+    ,
+    newVideo("hellochris", "hellochris.mp4")
+        .size(400,400)
+    ,
+    newVideo("intropt2", "trainingintro-2.mp4")
+        .size(400,400)
+    ,
+    newCanvas("introscreen", 1100, 563)
+        .add(100, -130, getVideo("intropt1"))
+        .add(600, -130, getVideo("hellochris"))
+        .center()
+        .print()
+        .log()
+    ,
+    newSelector("tostart")
+        .add(getVideo("intropt1"))
+        .frame("none")
+        .wait()
+        .once()
+        .test.selected()
+        .success(getVideo("intropt1").disable(0.01).play().wait())
+    ,
+    getVideo("hellochris").disable(0.01).play().wait()
+    ,
+    getCanvas("introscreen").add(100, -130, getVideo("intropt2"))
+    ,
+    getVideo("intropt2").disable(0.01).play().wait()
+)
+
+// Generates trials for this phase from a CSV file. 
+
+Template("lingexpt-trainingphase2.csv", row=>
+    newTrial("testtraining",
+        getVar("endtrials").test.is(0) // if value of variable is 0, ends trials. As default value is 1, only 1 trial will be generated.
+            .success(end())
+        ,
+        newVideo("here", row.Here)
+            .size(400,400)
+        ,
+        newImage("picture", row.Picture)
+            .size(300,300)
+        ,
+        newVideo("chrisstatic", row.Chrisdialoguestatic)
+            .size(400,400)
+        ,
+        newVideo("question", row.Chloequestion)
+            .size(400,400)
+        ,
+        newVideo("square", "animatedsquarebutton.mp4")
+            .size(215,188)
+        ,
+        newVideo("circle", "animatedcirclebutton.mp4")
+            .size(215,188)
+        ,
+        newVideo("triangle", "animatedtrianglebutton.mp4")
+            .size(215,188)
+        ,
+        newText("squaretext", row.Squareoption)
+            .css("font-size", "30px")
+        ,
+        newText("circletext", row.Circleoption)
+            .css("font-size", "30px")
+        ,
+        newText("triangletext", "Not sure")
+            .css("font-size", "30px")
+        ,
+        newCanvas("trainingphase2", 1100, 563)
+            .add(400, -90, getImage("picture").log())
+            .add(0, -130, getVideo("here"))
+            .add(700, -130, getVideo("chrisstatic").log())
+            .add(200, 305, getVideo("square"))
+            .add(450, 305, getVideo("circle"))
+            .add(700, 305, getVideo("triangle"))
+            .add(230, 470, getText("squaretext"))
+            .add(480, 470, getText("circletext"))
+            .add(730, 470, getText("triangletext"))
+            .center()
+            .print()
+            .log()
+        ,
+        getVideo("here").disable(0.01).play().wait()
+        ,
+        getVideo("chrisstatic").disable(0.01).play().wait()
+        ,
+        getCanvas("trainingphase2").add(-70, -130, getVideo("question"))
+        ,
+        getVideo("question").disable(0.01).play().wait()
+        ,
+        newSelector("shapes") // creates three buttons of different shapes that represent the answers available to the participant.
+            .add(getVideo("circle"), getVideo("square"), getVideo("triangle"))
+            .frame("none")
+            .once()
+            .wait()
+            .log()
+            .test.selected(getVideo(row.Cresponse)) // tests if the right response has been selected 
+            .success(
+                getVideo(row.Cresponse).disable(0.01).play().wait() // if yes, makes the relevant button buzz and light up
+                ,
+                newTimer("break1", 500)
+                    .start()
+                    .wait()
+                ,
+                newVideo("thatsright", row.Thatsright) // Chloe tells the participant their answer is right
+                    .size(400,400)
+                ,
+                getCanvas("trainingphase2").add(0,-130, getVideo("thatsright").log())
+                ,
+                getVideo("thatsright").disable(0.01).play().wait()
+                ,
+                newVideo("test-answer1", row.Chrisdialogue) // presents the right answer
+                    .size(400,400)
+                ,
+                getCanvas("trainingphase2").add(700,-130, getVideo("test-answer1").log())
+                ,
+                getVideo("test-answer1").disable(0.01).play().wait()
+                ,
+                getVar("endtrials").set(v => v - 1) // decrements the variable's value by one; when variable reaches 0, trials end
+                )
+            .failure( // if the right answer has not been selected
+                getSelector("shapes")
+                    .test.selected(getVideo(row.Wresponse)) // tests if the wrong response has been selected
+                    .success(
+                        getVideo(row.Wresponse).disable(0.01).play().wait() // if yes, makes the relevant button buzz and light up
+                        ,
+                        newTimer("break2", 500)
+                            .start()
+                            .wait()
+                        ,
+                        newVideo("thatswrong", row.Thatsnotright) // Chloe tells the participant their answer is wrong
+                            .size(400,400)
+                        ,
+                        getCanvas("trainingphase2").add(0,-130, getVideo("thatswrong").log())
+                        ,
+                        getVideo("thatswrong").disable(0.01).play().wait()
+                        ,
+                        newVideo("test-answer2", row.Chrisdialogue) // presents the right answer
+                            .size(400,400)
+                        ,
+                        getCanvas("trainingphase2").add(700,-130, getVideo("test-answer2").log())
+                        ,
+                        getVideo("test-answer2").disable(0.01).play().wait()
+                        ,
+                        getVar("endtrials").set(v => v - 1)
+                    )
+                    .failure( // if the wrong answer has not been selected, then the only option left is "not sure"
+                        getVideo("triangle").disable(0.01).play().wait() // makes the "not sure" button buzz and light up
+                        ,
+                        newTimer("break3", 1000)
+                            .start()
+                            .wait()
+                        ,
+                        newVideo("isee", row.Isee) // Chloe provides a neutral answer
+                            .size(400,400)
+                        ,
+                        getCanvas("trainingphase2").add(0,-130, getVideo("isee").log())
+                        ,
+                        getVideo("isee").disable(0.01).play().wait()
+                        ,
+                        newVideo("test-answer3", row.Chrisdialogue)
+                            .size(400,400)
+                        ,
+                        getCanvas("trainingphase2").add(700,-130, getVideo("test-answer3").log())
+                        ,
+                        getVideo("test-answer3").disable(0.01).play().wait()
+                        ,
+                        getVar("endtrials").set(v => v - 1)
+                    )
+            )
+                
+    )
+);
+
+newTrial("conc", // presents Chloe's conclusion video and provides the transition for the next phase, i.e., the test phase
+    newVideo("conc2", "trainingconc-2.mp4")
+        .size(400,400)
+    ,
+    newHtml("playbutton", "playbutton.html")
+    ,
+    newImage("playbutton0", "playbutton.jpg")
+        .size(50, 50)
+    ,
+    newImage("gumballmachine", "emptymachine.png")
+        .size(250,358)
+    ,
+    newImage("sam", "sam.png")
+        .size(400,400)
+    ,
+    newCanvas("concscreen", 1100, 563)
+        .add(50, 0, getVideo("conc2"))
+        .add(700, 0, getImage("sam"))
+        .add(450, 50, getImage("gumballmachine"))
+        .add(450, 400, getImage("playbutton0"))
+        .center()
+        .print()
+        .log()
+    ,
+    getVideo("conc2").disable(0.01).play().wait()
+    ,
+    getImage("playbutton0").remove()
+    ,
+    getCanvas("concscreen").add(450, 400, getHtml("playbutton"))
+    ,
+    newSelector("presstoplay")
+        .add(getHtml("playbutton"))
+        .once()
+        .wait()
+)
