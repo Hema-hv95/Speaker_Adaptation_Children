@@ -1,0 +1,179 @@
+PennController.ResetPrefix(null);
+
+//To hide the progress bar and prevent it from distracting the participant.
+
+var defaults = [      "PennController",{hideProgressBar: true}
+                ] ;
+// Preloads resources, minimizes lags during the experiment.                
+CheckPreloaded();
+
+//Randomizes all the trials labelled "Blue" and "Orange" (depending on the value assigned to them under the Target column of CSV file) and shuffles them so they are evenly distributed across the experiment.
+
+Sequence("Forvariable", shuffle(randomize("Blue"), randomize("Orange")), "playbutton");
+
+//Creates global variables that control the number of times trials of a certain condition/category are shown. For example, trials that are targetting the 40 percent condition with the quantifier "few" can appear only 3 times, i.e., "Fewforty" = 3.
+//Each variable name is a value assigned to a row under the column "Variablename" of the CSV file.
+
+newTrial("Forvariable",
+    newVar("Test-taken", 1).global()
+    ,
+    newVar("Noselector", 1).global()
+    ,
+    newVar("Nonezero", 1).global()
+    ,
+    newVar("Allhundred", 1).global()
+    ,
+    newVar("Fewtwenty", 1).global()
+    ,
+    newVar("Manytwenty", 1).global()
+    ,
+    newVar("Feweighty", 1).global()
+    ,
+    newVar("Manyeighty", 1).global()
+    ,
+    newVar("Fewforty", 3).global()
+    ,
+    newVar("Manyforty", 3).global()
+    ,
+    newVar("Fewsixty", 3).global()
+    ,
+    newVar("Manysixty", 3).global()
+);
+
+Template("lingexpt-exposurephase2.csv", row =>
+    newTrial(row.Target,
+        getVar("Test-taken").test.is(a => a > 18)
+            .success(end()) // ends the experiment if 18 trials have been completed (see conditional at the end for how the variable increments by one after each trial)
+        ,
+        
+        // Proceeds with a particular trial only if the value is not zero, i.e., if there is still at least one trial remaining for that category/condition. 
+        // Otherwise, moves onto another category.
+        // Experiment ends if all categories are exhausted.
+        
+        getVar(row.Variablename).test.is(0).failure(
+            newImage("Gumball-machine", row.Image)
+                .size(700,393)
+            ,
+            newVideo("Question", row.Question)
+                .size(400,400)
+            ,
+            newVideo("Green", "animatedgreenbutton.mp4")
+                .size(215,188)
+            ,
+            newVideo("Red", "animatedredbutton.mp4")
+                .size(215,188)
+            ,
+            newText("Affirm", "Yes")
+                .css("font-size", "30px")
+            ,
+            newText("Deny", "No")
+                .css("font-size", "30px")
+            ,
+            newCanvas("Exposurecanvas", 1100, 563)
+                .add(0,-90, getImage("Gumball-machine"))
+                .add(500,-130, getVideo("Question"))
+                .add(300,305, getVideo("Green"))
+                .add(550,305, getVideo("Red"))
+                .add(380,465, getText("Affirm"))
+                .add(630,465, getText("Deny"))
+                .center()
+                .print()
+                .log()
+            ,
+            newTimer("Break0", 1000)
+                .start()
+                .wait()
+            ,
+            getVar("Noselector") // Participant must click on the cartoon to play the video and start the experiment on the first trial only.
+                .test.is(x => x > 1)
+                .success(getVideo("Question").disable(0.01).play().wait())
+                .failure(
+                    newSelector("Tostart")
+                        .add(getVideo("Question"))
+                        .frame("none")
+                        .once()
+                        .wait()
+                        .test.selected()
+                        .success(getVideo("Question").disable(0.01).play().wait())
+                    ,
+                    getVar("Noselector").set(x => x + 1)
+                    )
+            ,
+            newSelector("Greenorred")
+                .add(getVideo("Green"), getVideo("Red"))
+                .frame("none")
+                .once()
+                .wait()
+                .log()
+                .test.selected(getVideo(row.Rightresponse)) // The column "Rightresponse" in the CSV file contains the names (corresponding to each row) assigned to the animations of the red button and green button.
+                .success(
+                    getVideo(row.Rightresponse)
+                        .disable(0.01)
+                        .play()
+                        .wait()
+                    ,
+                    newTimer("Break1", 500)
+                        .start()
+                        .wait()
+                    ,
+                    getVideo("Question").remove()
+                    ,
+                    newVideo("Agreement", row.Agreement).size(400,400)
+                    ,
+                    getCanvas("Exposurecanvas").add(500,-130, getVideo("Agreement").log())
+                    ,
+                    getVideo("Agreement").play().disable(0.01).wait()
+                    ,
+                    getVar(row.Variablename).set(v => v - 1) //Variablename decrements by one after each trial in the "Variablename" category until that category reaches zero.
+                    )
+                .failure(
+                    getVideo(row.Wrongresponse)
+                        .disable(0.01)
+                        .play()
+                        .wait()
+                    ,
+                    newTimer("Break2", 500)
+                        .start()
+                        .wait()
+                    ,
+                    getVideo("Question").remove()
+                    ,
+                    newVideo("Disagreement", row.Disagreement).size(400,400)
+                    ,
+                    getCanvas("Exposurecanvas").add(500,-130, getVideo("Disagreement").log())
+                    ,
+                    getVideo("Disagreement").play().disable(0.01).wait()
+                    ,
+                    getVar(row.Variablename).set(v => v - 1)
+                    )
+            )
+        ,
+        getVar("Test-taken").set(a => a + 1)
+    )
+    .log("Correctresponse", row.Rightresponse)
+);
+
+newTrial("playbutton",
+    newImage("play", "playbutton.jpg")
+        .size(100, 100)
+    ,
+    newHtml("playhtml", "playbutton.html")
+    ,
+    newCanvas("playcanvas", 1100, 563)
+        .add(450, 400, getImage("play"))
+        .center()
+        .print()
+    ,
+    newTimer("break", 1000)
+        .start()
+        .wait()
+    ,
+    getImage("play").remove()
+    ,
+    getCanvas("playcanvas").add(450, 400, getHtml("playhtml"))
+    ,
+    newSelector("presstoplay")
+        .add(getHtml("playhtml"))
+        .once()
+        .wait()
+)
